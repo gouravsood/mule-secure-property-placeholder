@@ -1,0 +1,4 @@
+{
+	"securedProp" : #[flowVars.securedProp],
+	"unsecuredProp" : #[flowVars.unsecuredProp]
+}

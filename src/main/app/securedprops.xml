@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:context="http://www.springframework.org/schema/context" xmlns:secure-property-placeholder="http://www.mulesoft.org/schema/mule/secure-property-placeholder" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="9081" doc:name="HTTP Listener Configuration"/>
+    <!-- <secure-property-placeholder:config name="Secure_Property_Placeholder" encryptionAlgorithm="Blowfish" key="0123456789" location="SecuredProps.properties" doc:name="Secure Property Placeholder"/> -->
+	
+	<secure-property-placeholder:config name="Secure_Property_Placeholder" encryptionAlgorithm="Blowfish" key="${secure-key}" location="SecuredProps-${env}.properties" doc:name="Secure Property Placeholder" ignoreUnresolvablePlaceholders="true" ignoreResourceNotFound="true"/>
+	
+    <context:property-placeholder location="UnsecuredProps.properties"/>
+	
+    <flow name="mule-secure-property-placeholderFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/testsecuredprop" doc:name="HTTP"/>
+        <set-variable variableName="securedProp" value="${secure-prop-key}" doc:name="Variable"/>
+        <logger message="${secure-prop-key}" level="INFO" doc:name="Logger"/>
+        <set-variable variableName="unsecuredProp" value="${unsecure-prop-key}" doc:name="Variable"/>
+        <logger message="${unsecure-prop-key}" level="INFO" doc:name="Logger"/>
+        <parse-template location="responsejson.template" metadata:id="607e3801-e009-45d6-87d3-668d336814a5" doc:name="Parse Template"/>
+    </flow>
+</mule>
